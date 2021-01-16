@@ -69,7 +69,7 @@
 
 <body>
     <div id="world"></div>
-    <div id="score">Score: 0</div>
+    <div id="score"></div>
     <div id="ninjaman"></div>
     <div id="pumpky"></div>
 </body>
@@ -123,6 +123,7 @@
     function drawScore() {
         document.getElementById('score').innerHTML = "Score: " + score;
     }
+    drawScore();
 
     document.onkeydown = function(e) {
         if (e.keyCode == 37) {
