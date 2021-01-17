@@ -56,6 +56,18 @@
             top: 40px;
         }
         
+        #ghost {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url('pumpky.gif');
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+        
         #score {
             position: absolute;
             top: 5px;
@@ -71,7 +83,7 @@
     <div id="world"></div>
     <div id="score"></div>
     <div id="ninjaman"></div>
-    <div id="pumpky"></div>
+    <div id="ghost"></div>
 </body>
 <script type="text/javascript">
     var world = new Array(15).fill(1).map(() => new Array(15).fill(1));
@@ -145,6 +157,48 @@
     }
     drawNinjaman();
 
+    var ghost = {
+        x: 8,
+        y: 12
+    };
+
+    function drawGhost() {
+        document.getElementById('ghost').style.top = ghost.y * 40 + 'px';
+        document.getElementById('ghost').style.left = ghost.x * 40 + 'px';
+    }
+    drawGhost();
+
+    function moveGhost() {
+        var dir = [
+            [ghost.y - 1, ghost.x], //up
+            [ghost.y, ghost.x - 1], //left
+            [ghost.y, ghost.x + 1], //right
+            [ghost.y + 1, ghost.x] //down
+        ];
+
+        var minDistance = Math.sqrt(Math.pow(ninjaman.y - ghost.y, 2) + Math.pow(ninjaman.x - ghost.x, 2));
+        var moves = [];
+        for (var i = 0; i < dir.length; i++) {
+            moves[i] = [];
+            for (var j = 0; j < dir[0].length - 1; j++) {
+                var newDistance = Math.sqrt(Math.pow(ninjaman.y - dir[i][j], 2) + Math.pow(ninjaman.x - dir[i][j + 1], 2));
+                moves[i].push(dir[i]);
+                if (newDistance < minDistance && world[dir[i][j]][dir[i][j + 1]] != 1) {
+                    ghost.y = dir[i][j];
+                    ghost.x = dir[i][j + 1];
+                }
+                console.log("ghost", moves[i][j]);
+                console.log("ninjaman", ninjaman.y, ninjaman.x);
+            }
+        }
+        if (ninjaman.x == ghost.x && ninjaman.y == ghost.y) {
+            ninjaman.x = ninjaman.y = -1;
+            window.alert('Game over');
+            window.location = "index.html";
+        }
+    }
+    moveGhost();
+
     var score = 0;
 
     function drawScore() {
@@ -177,7 +231,9 @@
             score += 5;
         }
         drawScore();
+        drawGhost();
         drawNinjaman();
+        moveGhost();
         drawWorld();
     }
 </script>
