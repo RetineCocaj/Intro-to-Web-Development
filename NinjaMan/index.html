@@ -170,31 +170,21 @@
 
     function moveGhost() {
         var dir = [
-            [ghost.y - 1, ghost.x], //up
             [ghost.y, ghost.x - 1], //left
             [ghost.y, ghost.x + 1], //right
+            [ghost.y - 1, ghost.x], //up
             [ghost.y + 1, ghost.x] //down
         ];
 
         var minDistance = Math.sqrt(Math.pow(ninjaman.y - ghost.y, 2) + Math.pow(ninjaman.x - ghost.x, 2));
-        var moves = [];
-        for (var i = 0; i < dir.length; i++) {
-            moves[i] = [];
-            for (var j = 0; j < dir[0].length - 1; j++) {
-                var newDistance = Math.sqrt(Math.pow(ninjaman.y - dir[i][j], 2) + Math.pow(ninjaman.x - dir[i][j + 1], 2));
-                moves[i].push(dir[i]);
-                if (newDistance < minDistance && world[dir[i][j]][dir[i][j + 1]] != 1) {
-                    ghost.y = dir[i][j];
-                    ghost.x = dir[i][j + 1];
-                }
-                console.log("ghost", moves[i][j]);
-                console.log("ninjaman", ninjaman.y, ninjaman.x);
+        for (var i = 0; i < dir.length; i++) { //0, 1, 2, 3
+            var newDistance = Math.sqrt(Math.pow(ninjaman.y - dir[i][0], 2) + Math.pow(ninjaman.x - dir[i][1], 2));
+            if (newDistance < minDistance && world[dir[i][0]][dir[i][1]] != 1) {
+                minDistance = newDistance;
+                ghost.y = dir[i][0];
+                ghost.x = dir[i][1];
+                drawGhost();
             }
-        }
-        if (ninjaman.x == ghost.x && ninjaman.y == ghost.y) {
-            ninjaman.x = ninjaman.y = -1;
-            window.alert('Game over');
-            window.location = "index.html";
         }
     }
     moveGhost();
@@ -231,10 +221,13 @@
             score += 5;
         }
         drawScore();
+        moveGhost();
         drawGhost();
         drawNinjaman();
-        moveGhost();
         drawWorld();
+        if (ghost.y == ninjaman.y && ghost.x == ninjaman.x) {
+            document.onkeydown = null;
+        }
     }
 </script>
 
